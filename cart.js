@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const paymentOptionBtns = document.querySelectorAll('.payment-option-btn');
   const paymentForms = document.querySelectorAll('.payment-form');
 
+  // Progress bar elements
+  const progressSteps = document.querySelectorAll('.progress-step');
+
+  // Modal elements
+  const confirmationModal = document.getElementById('confirmation-modal');
+  const continueShoppingBtn = document.getElementById('continue-shopping-btn');
+
   // --- Cart Functions ---
 
   function loadCart() {
@@ -53,12 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (paymentSection) {
         paymentSection.classList.add('hidden');
       }
+      updateProgressBar(1);
       return;
     }
     
     if (paymentSection) {
       paymentSection.classList.remove('hidden');
     }
+    updateProgressBar(2);
 
     const table = document.createElement('table');
     table.innerHTML = `
@@ -101,6 +110,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // --- Progress Bar Functions ---
+  function updateProgressBar(currentStep) {
+    progressSteps.forEach(step => {
+      const stepNumber = parseInt(step.dataset.step, 10);
+      if (stepNumber === currentStep) {
+        step.classList.add('active');
+      } else {
+        step.classList.remove('active');
+      }
+    });
+  }
+
   // --- Payment Functions ---
   
   function handlePaymentSwitch(e) {
@@ -120,9 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   function handlePaymentSubmit(e) {
       e.preventDefault();
-      alert('Payment successful! Thank you for your order. 💖');
+      confirmationModal.classList.remove('hidden');
+      updateProgressBar(3);
       clearCart();
-      // We don't reset the form because the cart will be empty and the payment section will hide.
   }
 
   // --- Event Listeners ---
@@ -136,6 +157,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   paymentForms.forEach(form => form.addEventListener('submit', handlePaymentSubmit));
 
+  continueShoppingBtn.addEventListener('click', () => {
+    confirmationModal.classList.add('hidden');
+    window.location.href = 'index.html';
+  });
 
   // --- Initialize ---
   loadCart();

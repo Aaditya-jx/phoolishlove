@@ -26,6 +26,17 @@
   </header>
 
   <main class="cart-page-container">
+    <div class="progress-bar">
+      <div class="progress-step active" data-step="1">
+        <span>Cart</span>
+      </div>
+      <div class="progress-step" data-step="2">
+        <span>Payment</span>
+      </div>
+      <div class="progress-step" data-step="3">
+        <span>Confirmation</span>
+      </div>
+    </div>
     <section class="cart-section">
       <h2>Your Cart</h2>
       <div id="cart-items">
@@ -73,6 +84,14 @@
   <footer>
     <p>© 2026 Phoolishh Loveee | Made with 💖</p>
   </footer>
+
+  <div id="confirmation-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <h2>Payment Successful!</h2>
+      <p>Thank you for your order. We've received your payment and will process your order shortly.</p>
+      <button id="continue-shopping-btn" class="btn">Continue Shopping</button>
+    </div>
+  </div>
 
   <script src="cart.js"></script>
   <script src="script.js"></script>
