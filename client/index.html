@@ -27,6 +27,14 @@
         <a href="index.html#about">About</a>
         <a href="index.html#contact">Contact</a>
         <a href="cart.html" id="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+        <span id="auth-links">
+          <a href="login.html" id="login-link">Login</a>
+          <a href="register.html" id="register-link">Register</a>
+        </span>
+        <span id="user-links" style="display: none;">
+          <span id="user-name"></span>
+          <a href="#" id="logout-link">Logout</a>
+        </span>
       </div>
     </nav>
   </header>
@@ -169,6 +177,31 @@
     <p>© 2026 Phoolishh Loveee | Made with 💖</p>
   </footer>
 
+  <script src="api-config.js"></script>
+  <script src="auth.js"></script>
   <script src="script.js"></script>
+  <script>
+    // Update navbar based on auth status
+    document.addEventListener('DOMContentLoaded', () => {
+      const authLinks = document.getElementById('auth-links');
+      const userLinks = document.getElementById('user-links');
+      const userName = document.getElementById('user-name');
+      const logoutLink = document.getElementById('logout-link');
+      const user = getCurrentUser();
+      
+      if (isAuthenticated() && user) {
+        authLinks.style.display = 'none';
+        userLinks.style.display = 'inline';
+        userName.textContent = `👤 ${user.name}`;
+        logoutLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          logoutUser();
+        });
+      } else {
+        authLinks.style.display = 'inline';
+        userLinks.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>

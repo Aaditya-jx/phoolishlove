@@ -21,6 +21,14 @@
         <a href="index.html#about">About</a>
         <a href="index.html#contact">Contact</a>
         <a href="cart.html" id="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+        <span id="auth-links">
+          <a href="login.html">Login</a>
+          <a href="register.html">Register</a>
+        </span>
+        <span id="user-links" style="display: none;">
+          <span id="user-name"></span>
+          <a href="#" id="logout-link">Logout</a>
+        </span>
       </div>
     </nav>
   </header>
@@ -49,35 +57,11 @@
 
     <section class="payment-section hidden">
       <h2>Payment</h2>
-      <div class="payment-options">
-        <button class="payment-option-btn active" data-payment="card">Credit/Debit Card</button>
-        <button class="payment-option-btn" data-payment="netbanking">Netbanking</button>
-        <button class="payment-option-btn" data-payment="upi">UPI</button>
+      <div class="payment-info">
+        <p>Click the button below to complete your payment securely via Razorpay.</p>
+        <p>You can choose your preferred payment method (Card, UPI, Netbanking, etc.) in the Razorpay checkout.</p>
       </div>
-
-      <form id="card-payment-form" class="payment-form">
-        <input type="text" placeholder="Name on Card" required />
-        <input type="text" placeholder="Card Number" required />
-        <input type="text" placeholder="Expiry (MM/YY)" required />
-        <input type="text" placeholder="CVV" required />
-        <button type="submit" class="btn">Pay Now</button>
-      </form>
-      
-      <div id="netbanking-payment-form" class="payment-form hidden">
-        <select>
-            <option>Select your bank</option>
-            <option>State Bank of India</option>
-            <option>HDFC Bank</option>
-            <option>ICICI Bank</option>
-            <option>Axis Bank</option>
-        </select>
-        <button type="submit" class="btn">Pay Now</button>
-      </div>
-
-      <div id="upi-payment-form" class="payment-form hidden">
-        <input type="text" placeholder="Enter your UPI ID" required />
-        <button type="submit" class="btn">Pay Now</button>
-      </div>
+      <button id="checkout-btn" class="btn" style="width: 100%; margin-top: 1rem; padding: 1rem; font-size: 1.2rem;">Proceed to Checkout</button>
     </section>
   </main>
 
@@ -93,7 +77,33 @@
     </div>
   </div>
 
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="api-config.js"></script>
+  <script src="auth.js"></script>
   <script src="cart.js"></script>
   <script src="script.js"></script>
+  <script>
+    // Update navbar based on auth status
+    document.addEventListener('DOMContentLoaded', () => {
+      const authLinks = document.getElementById('auth-links');
+      const userLinks = document.getElementById('user-links');
+      const userName = document.getElementById('user-name');
+      const logoutLink = document.getElementById('logout-link');
+      const user = getCurrentUser();
+      
+      if (isAuthenticated() && user) {
+        authLinks.style.display = 'none';
+        userLinks.style.display = 'inline';
+        userName.textContent = `👤 ${user.name}`;
+        logoutLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          logoutUser();
+        });
+      } else {
+        authLinks.style.display = 'inline';
+        userLinks.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>
