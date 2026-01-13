@@ -52,3 +52,7 @@ A detailed list of API endpoints can be found in the route files within the `rou
 -   **Products**: `/api/products`
 -   **Cart**: `/api/cart`
 -   **Orders**: `/api/orders`
+
+## Troubleshooting
+
+- **Login Issues**: If you are facing a "failed to fetch" error when trying to log in, please see `FIX_LOGIN_ERROR.md` in the root directory for a solution. The main `README.md` has also been updated to link to this new guide.

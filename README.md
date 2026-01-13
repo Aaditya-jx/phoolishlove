@@ -112,7 +112,8 @@ phoolishlove/
 
 ## 🐛 Troubleshooting
 
-See [SETUP_GUIDE.md](./SETUP_GUIDE.md) for common issues and solutions.
+- **Login Issues**: If you are facing a "failed to fetch" error when trying to log in, please see [FIX_LOGIN_ERROR.md](./FIX_LOGIN_ERROR.md) for a solution.
+- For other common issues and solutions, see [SETUP_GUIDE.md](./SETUP_GUIDE.md).
 
 ## 📄 License
 

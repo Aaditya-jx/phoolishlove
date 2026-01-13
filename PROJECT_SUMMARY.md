@@ -49,3 +49,7 @@ This separation is great because you could easily create a mobile app that uses 
 
 1.  **Start the Backend:** Navigate into the `server` directory, install dependencies (`npm install`), and start the server (`npm run dev`). This requires a `.env` file with a connection string to a MongoDB database.
 2.  **Start the Frontend:** Simply open the `client/index.html` file in a web browser. The site is designed to gracefully handle cases where the backend isn't running by showing hardcoded product data.
+
+### **6. Recent Changes**
+
+- **Troubleshooting Login Issues:** Added a new file, `FIX_LOGIN_ERROR.md`, to provide a step-by-step guide for users encountering "failed to fetch" errors during login. The main `README.md` has been updated to link to this new guide, ensuring users can easily find help for this common issue.

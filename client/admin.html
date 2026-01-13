@@ -13,6 +13,7 @@
             <div class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="index.html#products">Products</a>
+                <a href="admin.html" id="admin-link" style="display: none;">Admin</a>
                 <span id="user-links" style="display: none;">
                     <span id="user-name"></span>
                     <a href="#" id="logout-link">Logout</a>
@@ -106,15 +107,22 @@
             const logoutLink = document.getElementById('logout-link');
             const user = getCurrentUser();
 
+            const adminLink = document.getElementById('admin-link');
             if (isAuthenticated() && user) {
                 userLinks.style.display = 'inline';
                 userName.textContent = `👤 ${user.name}`;
+                if (user.isAdmin) {
+                    adminLink.style.display = 'inline';
+                } else {
+                    adminLink.style.display = 'none';
+                }
                 logoutLink.addEventListener('click', (e) => {
                     e.preventDefault();
                     logoutUser();
                 });
             } else {
                 // If not authenticated or not an admin, redirect
+                adminLink.style.display = 'none';
                 window.location.href = 'login.html';
             }
         });

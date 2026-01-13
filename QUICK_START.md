@@ -80,6 +80,9 @@ node seedProducts.js
 ### ❌ "JWT_SECRET is required"
 **Fix:** Add `JWT_SECRET=any_random_string_here` to `.env` file
 
+### ❌ "Failed to fetch" on Login
+**Fix:** The backend server is likely not running. See the `FIX_LOGIN_ERROR.md` file in the root directory for a step-by-step guide to fix this.
+
 ---
 
 ## ✅ Checklist Before Delivery

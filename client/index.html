@@ -27,6 +27,7 @@
         <a href="index.html#about">About</a>
         <a href="index.html#contact">Contact</a>
         <a href="cart.html" id="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+        <a href="admin.html" id="admin-link" style="display: none;">Admin</a>
         <span id="auth-links">
           <a href="login.html" id="login-link">Login</a>
           <a href="register.html" id="register-link">Register</a>
@@ -189,10 +190,16 @@
       const logoutLink = document.getElementById('logout-link');
       const user = getCurrentUser();
       
+      const adminLink = document.getElementById('admin-link');
       if (isAuthenticated() && user) {
         authLinks.style.display = 'none';
         userLinks.style.display = 'inline';
         userName.textContent = `👤 ${user.name}`;
+        if (user.isAdmin) {
+          adminLink.style.display = 'inline';
+        } else {
+          adminLink.style.display = 'none';
+        }
         logoutLink.addEventListener('click', (e) => {
           e.preventDefault();
           logoutUser();
@@ -200,6 +207,7 @@
       } else {
         authLinks.style.display = 'inline';
         userLinks.style.display = 'none';
+        adminLink.style.display = 'none';
       }
     });
   </script>
