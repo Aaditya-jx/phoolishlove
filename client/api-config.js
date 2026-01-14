@@ -5,6 +5,7 @@ const API_CONFIG = {
     products: '/products',
     cart: '/cart',
     orders: '/orders',
+    users: '/users',
     auth: {
       register: '/auth/register',
       login: '/auth/login'
