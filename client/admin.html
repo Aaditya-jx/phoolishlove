@@ -33,41 +33,109 @@
       </div>
     </nav>
   </header>
-  <div class="container">
-    <h1>Product Management</h1>
 
-    <!-- Add/Edit Product Form -->
-    <form id="product-form">
-      <input type="hidden" id="product-id">
-      <div class="form-group">
-        <label for="name">Product Name</label>
-        <input type="text" id="name" required>
+  <div class="admin-page-container">
+    <!-- Dashboard Overview -->
+    <section class="dashboard-summary">
+      <h2>Dashboard Overview</h2>
+      <div class="summary-cards">
+        <div class="card">
+          <h3>Total Revenue</h3>
+          <p id="dashboard-total-revenue">₹0</p>
+        </div>
+        <div class="card">
+          <h3>Number of Orders</h3>
+          <p id="dashboard-total-orders">0</p>
+        </div>
+        <div class="card">
+          <h3>Total Customers</h3>
+          <p id="dashboard-total-customers">0</p>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea id="description" required></textarea>
+      <div class="recent-orders-section">
+        <h2>Recent Orders</h2>
+        <table class="recent-orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="recent-orders-list">
+            <!-- Recent orders will be loaded here -->
+          </tbody>
+        </table>
       </div>
-      <div class="form-group">
-        <label for="price">Price</label>
-        <input type="number" id="price" required>
-      </div>
-      <div class="form-group">
-        <label for="image">Image</label>
-        <input type="file" id="image-file">
-        <input type="hidden" id="image-url">
-      </div>
-      <button type="submit">Save Product</button>
-      <button type="button" id="cancel-edit">Cancel Edit</button>
-    </form>
+    </section>
 
-    <!-- Product List -->
-    <div id="product-list">
-      <!-- Products will be dynamically loaded here -->
-    </div>
+    <!-- Order Management -->
+    <section class="orders-section">
+      <h2>Order Management</h2>
+      <div class="order-controls">
+        <input type="text" id="order-search" placeholder="Search by customer, order ID, or status">
+        <select id="order-status-filter">
+          <option value="">All Statuses</option>
+          <option value="paid">Paid</option>
+          <option value="unpaid">Unpaid</option>
+          <option value="delivered">Delivered</option>
+        </select>
+      </div>
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Phone</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="orders-list">
+          <!-- Orders will be loaded here -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Product Management -->
+    <section class="products-section">
+      <h2>Product Management</h2>
+      <form id="product-form">
+        <input type="hidden" id="product-id">
+        <div class="form-group">
+          <label for="name">Product Name</label>
+          <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="price">Price</label>
+          <input type="number" id="price" required>
+        </div>
+        <div class="form-group">
+          <label for="image">Image</label>
+          <input type="file" id="image-file">
+          <input type="hidden" id="image-url">
+        </div>
+        <button type="submit">Save Product</button>
+        <button type="button" id="cancel-edit">Cancel Edit</button>
+      </form>
+      <div id="product-list">
+        <!-- Products will be dynamically loaded here -->
+      </div>
+    </section>
   </div>
 
   <script src="api-config.js"></script>
   <script src="auth.js"></script>
+  <script src="admin-dashboard.js"></script>
+  <script src="admin-orders.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>
