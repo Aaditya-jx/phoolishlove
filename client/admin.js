@@ -1,198 +1,111 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    // DOM Elements
-    const ordersList = document.getElementById('orders-list');
-    const recentOrdersList = document.getElementById('recent-orders-list');
-    const totalRevenueEl = document.getElementById('total-revenue');
-    const totalOrdersEl = document.getElementById('total-orders');
-    const totalCustomersEl = document.getElementById('total-customers');
-    const searchInput = document.getElementById('search-input');
-    const filterStatus = document.getElementById('filter-status');
-    const statusModal = document.getElementById('status-modal');
-    const updateStatusForm = document.getElementById('update-status-form');
-    const modalError = document.getElementById('modal-error');
-    
-    const user = getCurrentUser();
-    let allOrders = []; // Cache all orders
-    let currentOrderId = null; // To track the order being updated
+document.addEventListener('DOMContentLoaded', () => {
+  const productForm = document.getElementById('product-form');
+  const productList = document.getElementById('product-list');
+  const productIdInput = document.getElementById('product-id');
+  const nameInput = document.getElementById('name');
+  const descriptionInput = document.getElementById('description');
+  const priceInput = document.getElementById('price');
+  const imageInput = document.getElementById('image');
+  const cancelEditBtn = document.getElementById('cancel-edit');
 
-    // Page Protection: Redirect if not logged in or not an admin
-    if (!isAuthenticated() || !user || !user.isAdmin) {
-        alert('Access denied. You must be an admin to view this page.');
-        window.location.href = 'index.html';
-        return;
-    }
+  const API_BASE_URL = '/api'; // Using relative path
 
-    // --- Data Fetching ---
-    async function fetchAllOrders() {
-        try {
-            const orders = await apiRequest(getAPIUrl(API_CONFIG.endpoints.orders), {
-                method: 'GET'
-            });
-            allOrders = orders;
-            
-            // Initial render
-            updateDashboardSummary(allOrders);
-            renderAllOrders(allOrders);
-            renderRecentOrders(allOrders);
-
-        } catch (error) {
-            console.error('Failed to fetch orders:', error);
-            ordersList.innerHTML = '<p class="error-message">Failed to load orders. Please try again later.</p>';
-        }
-    }
-
-    // --- Dashboard Summary ---
-    function updateDashboardSummary(orders) {
-        totalRevenueEl.textContent = `₹${orders.reduce((sum, o) => sum + o.totalPrice, 0).toFixed(2)}`;
-        totalOrdersEl.textContent = orders.length;
-        const customerIds = new Set(orders.map(o => o.user ? o.user._id : null).filter(id => id));
-        totalCustomersEl.textContent = customerIds.size;
-    }
-
-    // --- Order Rendering ---
-    function renderAllOrders(orders) {
-        renderTable(ordersList, orders, 'orders-table');
-    }
-
-    function renderRecentOrders(orders) {
-        const recent = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
-        renderTable(recentOrdersList, recent, 'recent-orders-table');
-    }
-
-    function renderTable(container, orders, tableClass) {
-        if (orders.length === 0) {
-            container.innerHTML = `<p>No orders found.</p>`;
-            return;
-        }
-        container.innerHTML = '';
-        container.appendChild(createOrdersTable(orders, tableClass));
-    }
-
-    // --- Search and Filter ---
-    function handleSearchAndFilter() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const statusFilter = filterStatus.value;
-
-        const filteredOrders = allOrders.filter(order => {
-            const customerName = (order.user ? order.user.name : 'Guest').toLowerCase();
-            const orderId = order._id.toLowerCase();
-            
-            const matchesSearch = customerName.includes(searchTerm) || orderId.includes(searchTerm);
-
-            if (!statusFilter) return matchesSearch;
-
-            let matchesStatus = false;
-            if (statusFilter === 'Paid') matchesStatus = order.isPaid && !order.isDelivered;
-            else if (statusFilter === 'Not Paid') matchesStatus = !order.isPaid;
-            else if (statusFilter === 'Delivered') matchesStatus = order.isDelivered;
-
-            return matchesSearch && matchesStatus;
-        });
-        renderAllOrders(filteredOrders);
-    }
-
-    // --- Update Status Modal Logic ---
-    window.openUpdateStatusModal = (orderId) => {
-        currentOrderId = orderId;
-        const order = allOrders.find(o => o._id === orderId);
-        if (!order) return;
-
-        document.getElementById('modal-order-id').textContent = order._id;
-        document.getElementById('modal-is-paid').value = String(order.isPaid);
-        document.getElementById('modal-is-delivered').value = String(order.isDelivered);
-        
-        modalError.style.display = 'none';
-        statusModal.classList.remove('hidden');
-    };
-
-    window.closeUpdateStatusModal = () => {
-        statusModal.classList.add('hidden');
-        currentOrderId = null;
-    };
-
-    async function handleStatusUpdate(e) {
-        e.preventDefault();
-        if (!currentOrderId) return;
-
-        const isPaid = document.getElementById('modal-is-paid').value === 'true';
-        const isDelivered = document.getElementById('modal-is-delivered').value === 'true';
-        
-        try {
-            const updatedOrder = await apiRequest(`${getAPIUrl(API_CONFIG.endpoints.orders)}/${currentOrderId}/status`, {
-                method: 'PUT',
-                body: JSON.stringify({ isPaid, isDelivered })
-            });
-            
-            // Update local order cache
-            const orderIndex = allOrders.findIndex(o => o._id === currentOrderId);
-            if(orderIndex > -1) {
-                allOrders[orderIndex] = updatedOrder;
-            }
-
-            // Re-render everything to reflect changes
-            handleSearchAndFilter(); // This will re-render the main table
-            renderRecentOrders(allOrders);
-            updateDashboardSummary(allOrders);
-
-            closeUpdateStatusModal();
-
-        } catch (error) {
-            console.error('Failed to update order status:', error);
-            modalError.textContent = 'Failed to update status. Please try again.';
-            modalError.style.display = 'block';
-        }
-    }
-
-    // --- Helper function to create a table ---
-    function createOrdersTable(orders, tableClass) {
-        const table = document.createElement('table');
-        table.className = tableClass;
-        table.innerHTML = `
-            <thead>
-                <tr>
-                    <th>Order ID</th>
-                    <th>Date</th>
-                    <th>Customer</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Items</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
+  // Fetch all products and display them
+  async function fetchProducts() {
+    try {
+      const products = await apiRequest(`${API_BASE_URL}/products`);
+      productList.innerHTML = '';
+      products.forEach(product => {
+        const productEl = document.createElement('div');
+        productEl.classList.add('product-item');
+        productEl.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" width="100">
+          <div>
+            <h3>${product.name}</h3>
+            <p>${product.description}</p>
+            <p>$${product.price}</p>
+          </div>
+          <div>
+            <button onclick="editProduct('${product._id}', '${product.name}', '${product.description}', '${product.price}', '${product.image}')">Edit</button>
+            <button onclick="deleteProduct('${product._id}')">Delete</button>
+          </div>
         `;
-        const tbody = table.querySelector('tbody');
-
-        orders.forEach(order => {
-            const tr = document.createElement('tr');
-            
-            let status = '<span class="status-unpaid">Not Paid</span>';
-            if (order.isDelivered) status = '<span class="status-delivered">Delivered</span>';
-            else if (order.isPaid) status = '<span class="status-paid">Paid</span>';
-
-            tr.innerHTML = `
-                <td data-label="Order ID">${order._id}</td>
-                <td data-label="Date">${new Date(order.createdAt).toLocaleDateString()}</td>
-                <td data-label="Customer">${order.user ? order.user.name : 'Guest'}</td>
-                <td data-label="Total">₹${order.totalPrice.toFixed(2)}</td>
-                <td data-label="Status">${status}</td>
-                <td data-label="Items">
-                    <ul>${order.orderItems.map(item => `<li>${item.name} (x${item.qty})</li>`).join('')}</ul>
-                </td>
-                <td data-label="Actions">
-                    <button class="btn btn-secondary" onclick="openUpdateStatusModal('${order._id}')">Update</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-        return table;
+        productList.appendChild(productEl);
+      });
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      alert('Failed to fetch products. Please try again.');
     }
+  }
 
-    // --- Event Listeners ---
-    searchInput.addEventListener('input', handleSearchAndFilter);
-    filterStatus.addEventListener('change', handleSearchAndFilter);
-    updateStatusForm.addEventListener('submit', handleStatusUpdate);
+  // Handle form submission for adding/editing products
+  productForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = productIdInput.value;
+    const productData = {
+      name: nameInput.value,
+      description: descriptionInput.value,
+      price: parseFloat(priceInput.value),
+      image: imageInput.value,
+    };
 
-    // Initial fetch
-    fetchAllOrders();
+    try {
+      if (id) {
+        // Update existing product
+        await apiRequest(`${API_BASE_URL}/products/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify(productData),
+        });
+        alert('Product updated successfully!');
+      } else {
+        // Add new product
+        await apiRequest(`${API_BASE_URL}/products`, {
+          method: 'POST',
+          body: JSON.stringify(productData),
+        });
+        alert('Product added successfully!');
+      }
+      productForm.reset();
+      productIdInput.value = '';
+      fetchProducts();
+    } catch (error) {
+      console.error('Error saving product:', error);
+      alert('Failed to save product. Please try again.');
+    }
+  });
+
+  // Cancel edit mode
+  cancelEditBtn.addEventListener('click', () => {
+    productForm.reset();
+    productIdInput.value = '';
+    cancelEditBtn.style.display = 'none';
+  });
+
+  // Edit a product
+  window.editProduct = (id, name, description, price, image) => {
+    productIdInput.value = id;
+    nameInput.value = name;
+    descriptionInput.value = description;
+    priceInput.value = price;
+    imageInput.value = image;
+    cancelEditBtn.style.display = 'inline-block';
+    window.scrollTo(0, 0);
+  };
+
+  // Delete a product
+  window.deleteProduct = async (id) => {
+    if (confirm('Are you sure you want to delete this product?')) {
+      try {
+        await apiRequest(`${API_BASE_URL}/products/${id}`, { method: 'DELETE' });
+        alert('Product deleted successfully!');
+        fetchProducts();
+      } catch (error) {
+        console.error('Error deleting product:', error);
+        alert('Failed to delete product. Please try again.');
+      }
+    }
+  };
+
+  // Initial fetch of products
+  fetchProducts();
 });

@@ -1,131 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard | Phoolishh Loveee</title>
-    <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Product Management</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="navbar">
-        <h1>🌸 Phoolishh Loveee - Admin</h1>
-        <nav>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="index.html#products">Products</a>
-                <a href="admin.html" id="admin-link" style="display: none;">Admin</a>
-                <span id="user-links" style="display: none;">
-                    <span id="user-name"></span>
-                    <a href="#" id="logout-link">Logout</a>
-                </span>
-            </div>
-        </nav>
-    </header>
+  <header class="navbar">
+    <h1>🌸 Phoolishh Loveee</h1>
+    <nav>
+      <div class="hamburger" tabindex="0" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="index.html#products">Products</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="cart.html" id="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+        <a href="admin.html" id="admin-link" style="display: none;">Admin</a>
+        <span id="auth-links">
+          <a href="login.html" id="login-link">Login</a>
+          <a href="register.html" id="register-link">Register</a>
+        </span>
+        <span id="user-links" style="display: none;">
+          <span id="user-name"></span>
+          <a href="#" id="logout-link">Logout</a>
+        </span>
+      </div>
+    </nav>
+  </header>
+  <div class="container">
+    <h1>Product Management</h1>
 
-    <main class="admin-page-container">
-        <section class="dashboard-summary">
-            <h2>Dashboard</h2>
-            <div class="summary-cards">
-                <div class="card">
-                    <h3>Total Revenue</h3>
-                    <p id="total-revenue">₹0</p>
-                </div>
-                <div class="card">
-                    <h3>Total Orders</h3>
-                    <p id="total-orders">0</p>
-                </div>
-                <div class="card">
-                    <h3>Total Customers</h3>
-                    <p id="total-customers">0</p>
-                </div>
-            </div>
-        </section>
+    <!-- Add/Edit Product Form -->
+    <form id="product-form">
+      <input type="hidden" id="product-id">
+      <div class="form-group">
+        <label for="name">Product Name</label>
+        <input type="text" id="name" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="price">Price</label>
+        <input type="number" id="price" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label for="image">Image URL</label>
+        <input type="text" id="image" required>
+      </div>
+      <button type="submit">Save Product</button>
+      <button type="button" id="cancel-edit">Cancel Edit</button>
+    </form>
 
-        <section class="orders-section">
-            <h2>All Orders</h2>
-            <div class="order-controls">
-                <input type="text" id="search-input" placeholder="Search by name, ID, or status..." />
-                <select id="filter-status">
-                    <option value="">All Statuses</option>
-                    <option value="Paid">Paid</option>
-                    <option value="Shipped">Shipped</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Not Paid">Not Paid</option>
-                </select>
-            </div>
-            <div id="orders-list">
-                <!-- Orders will be injected by JavaScript -->
-            </div>
-        </section>
-
-        <section class="recent-orders-section">
-            <h2>Recent Orders</h2>
-            <div id="recent-orders-list">
-                <!-- Recent orders will be injected by JavaScript -->
-            </div>
-        </section>
-    </main>
-
-    <!-- Update Status Modal -->
-    <div id="status-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <button class="close-modal-btn" onclick="closeUpdateStatusModal()">&times;</button>
-            <h2>Update Order Status</h2>
-            <p><strong>Order ID:</strong> <span id="modal-order-id"></span></p>
-            <form id="update-status-form">
-                <div class="form-group">
-                    <label for="modal-is-paid">Payment Status</label>
-                    <select id="modal-is-paid">
-                        <option value="true">Paid</option>
-                        <option value="false">Not Paid</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="modal-is-delivered">Delivery Status</label>
-                    <select id="modal-is-delivered">
-                        <option value="true">Delivered</option>
-                        <option value="false">Not Delivered</option>
-                    </select>
-                </div>
-                <p id="modal-error" class="error-message" style="display: none;"></p>
-                <button type="submit" class="btn">Save Changes</button>
-            </form>
-        </div>
+    <!-- Product List -->
+    <div id="product-list">
+      <!-- Products will be dynamically loaded here -->
     </div>
+  </div>
 
-    <footer>
-        <p>© 2026 Phoolishh Loveee | Made with 💖</p>
-    </footer>
-
-    <script src="api-config.js"></script>
-    <script src="auth.js"></script>
-    <script src="admin.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const userLinks = document.getElementById('user-links');
-            const userName = document.getElementById('user-name');
-            const logoutLink = document.getElementById('logout-link');
-            const user = getCurrentUser();
-
-            const adminLink = document.getElementById('admin-link');
-            if (isAuthenticated() && user) {
-                userLinks.style.display = 'inline';
-                userName.textContent = `👤 ${user.name}`;
-                if (user.isAdmin) {
-                    adminLink.style.display = 'inline';
-                } else {
-                    adminLink.style.display = 'none';
-                }
-                logoutLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    logoutUser();
-                });
-            } else {
-                // If not authenticated or not an admin, redirect
-                adminLink.style.display = 'none';
-                window.location.href = 'login.html';
-            }
-        });
-    </script>
+  <script src="api-config.js"></script>
+  <script src="auth.js"></script>
+  <script src="admin.js"></script>
 </body>
 </html>

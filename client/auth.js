@@ -77,3 +77,39 @@ function logoutUser() {
   localStorage.removeItem('user');
   window.location.href = 'index.html';
 }
+
+// Update navbar based on auth status
+function updateNavbar() {
+  const authLinks = document.getElementById('auth-links');
+  const userLinks = document.getElementById('user-links');
+  const userName = document.getElementById('user-name');
+  const logoutLink = document.getElementById('logout-link');
+  const adminLink = document.getElementById('admin-link');
+  const user = getCurrentUser();
+
+  if (isAuthenticated() && user) {
+    if (authLinks) authLinks.style.display = 'none';
+    if (userLinks) userLinks.style.display = 'inline';
+    if (userName) userName.textContent = `👤 ${user.name}`;
+    if (adminLink) {
+      if (user.isAdmin) {
+        adminLink.style.display = 'inline';
+      } else {
+        adminLink.style.display = 'none';
+      }
+    }
+    if (logoutLink) {
+      logoutLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        logoutUser();
+      });
+    }
+  } else {
+    if (authLinks) authLinks.style.display = 'inline';
+    if (userLinks) userLinks.style.display = 'none';
+    if (adminLink) adminLink.style.display = 'none';
+  }
+}
+
+// Call updateNavbar on page load
+document.addEventListener('DOMContentLoaded', updateNavbar);

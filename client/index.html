@@ -181,35 +181,5 @@
   <script src="api-config.js"></script>
   <script src="auth.js"></script>
   <script src="script.js"></script>
-  <script>
-    // Update navbar based on auth status
-    document.addEventListener('DOMContentLoaded', () => {
-      const authLinks = document.getElementById('auth-links');
-      const userLinks = document.getElementById('user-links');
-      const userName = document.getElementById('user-name');
-      const logoutLink = document.getElementById('logout-link');
-      const user = getCurrentUser();
-      
-      const adminLink = document.getElementById('admin-link');
-      if (isAuthenticated() && user) {
-        authLinks.style.display = 'none';
-        userLinks.style.display = 'inline';
-        userName.textContent = `👤 ${user.name}`;
-        if (user.isAdmin) {
-          adminLink.style.display = 'inline';
-        } else {
-          adminLink.style.display = 'none';
-        }
-        logoutLink.addEventListener('click', (e) => {
-          e.preventDefault();
-          logoutUser();
-        });
-      } else {
-        authLinks.style.display = 'inline';
-        userLinks.style.display = 'none';
-        adminLink.style.display = 'none';
-      }
-    });
-  </script>
 </body>
 </html>

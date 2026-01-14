@@ -71,8 +71,26 @@
   <header class="navbar">
     <h1>🌸 Phoolishh Loveee</h1>
     <nav>
+      <div class="hamburger" tabindex="0" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
       <div class="nav-links">
         <a href="index.html">Home</a>
+        <a href="index.html#products">Products</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="cart.html" id="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+        <a href="admin.html" id="admin-link" style="display: none;">Admin</a>
+        <span id="auth-links">
+          <a href="login.html" id="login-link">Login</a>
+          <a href="register.html" id="register-link">Register</a>
+        </span>
+        <span id="user-links" style="display: none;">
+          <span id="user-name"></span>
+          <a href="#" id="logout-link">Logout</a>
+        </span>
       </div>
     </nav>
   </header>
