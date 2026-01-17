@@ -5,7 +5,8 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, 'uploads/');
+    // Save to the 'uploads' directory at the project root
+    cb(null, path.join(__dirname, '..', '..', 'uploads'));
   },
   filename(req, file, cb) {
     cb(
@@ -38,8 +39,8 @@ router.post('/', upload.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'No file uploaded' });
   }
-  // Normalize path for URL
-  const filePath = `/${req.file.path.replace(/\\/g, '/')}`;
+  // Send back the root-relative path for the URL
+  const filePath = `/uploads/${req.file.filename}`;
   res.send(filePath);
 });
 
