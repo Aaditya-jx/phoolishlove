@@ -33,7 +33,8 @@ const getProductById = async (req, res) => {
 // @route   POST /api/products
 // @access  Private/Admin
 const createProduct = async (req, res) => {
-  const { name, price, description, image } = req.body;
+  const { name, price, description } = req.body;
+  const image = req.file ? req.file.path : '';
 
   const product = new Product({
     name,
@@ -55,7 +56,8 @@ const createProduct = async (req, res) => {
 // @route   PUT /api/products/:id
 // @access  Private/Admin
 const updateProduct = async (req, res) => {
-  const { name, price, description, image } = req.body;
+  const { name, price, description } = req.body;
+  const image = req.file ? req.file.path : req.body.image;
 
   try {
     const product = await Product.findById(req.params.id);
