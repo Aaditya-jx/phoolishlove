@@ -8,13 +8,13 @@ const {
   deleteProduct,
 } = require('../controllers/productController');
 const { protect, admin } = require('../middleware/authMiddleware');
-const { upload } = require('./uploadRoutes');
+const { upload, cloudinaryUpload } = require('./uploadRoutes');
 
-router.route('/').get(getProducts).post(protect, admin, upload.single('image'), createProduct);
+router.route('/').get(getProducts).post(protect, admin, upload.single('image'), cloudinaryUpload, createProduct);
 router
   .route('/:id')
   .get(getProductById)
-  .put(protect, admin, upload.single('image'), updateProduct)
+  .put(protect, admin, upload.single('image'), cloudinaryUpload, updateProduct)
   .delete(protect, admin, deleteProduct);
 
 module.exports = router;
