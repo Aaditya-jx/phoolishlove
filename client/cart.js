@@ -178,6 +178,18 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // Get shipping details from the form
+    const phone = document.getElementById('shipping-phone').value;
+    const address = document.getElementById('shipping-address').value;
+    const city = document.getElementById('shipping-city').value;
+    const postalCode = document.getElementById('shipping-postalCode').value;
+    const country = document.getElementById('shipping-country').value;
+
+    if (!phone || !address || !city || !postalCode || !country) {
+      alert('Please fill out all shipping details.');
+      return;
+    }
+
     // Get total amount
     const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
     
@@ -203,10 +215,11 @@ document.addEventListener('DOMContentLoaded', () => {
           product: item.id
         })),
         shippingAddress: {
-          address: 'Sample Address',
-          city: 'City',
-          postalCode: '123456',
-          country: 'India'
+          address,
+          city,
+          postalCode,
+          country,
+          phone
         },
         paymentMethod: 'razorpay',
         itemsPrice: total,
@@ -262,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
         prefill: {
           name: userName,
           email: userEmail,
-          contact: '9999999999'
+          contact: phone
         },
         theme: {
           color: '#ff6fae'
@@ -305,8 +318,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  if (checkoutBtn) {
-    checkoutBtn.addEventListener('click', handleCheckout);
+  const shippingForm = document.getElementById('shipping-form');
+  if (shippingForm) {
+    shippingForm.addEventListener('submit', handleCheckout);
   }
 
   continueShoppingBtn.addEventListener('click', () => {
